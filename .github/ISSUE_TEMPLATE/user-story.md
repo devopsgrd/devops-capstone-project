@@ -1,6 +1,6 @@
 ---
 name: 📝 User Story
-about: Créer une nouvelle fonctionnalité utilisateur
+about: New Feature
 title: "[Story] "
 labels: enhancement
 assignees: ''
