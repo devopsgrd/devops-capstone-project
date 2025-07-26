@@ -29,3 +29,6 @@ coverage==6.3.2
 httpie==3.2.1
 
 Flask-Talisman==1.0.0
+
+flask-cors
+
