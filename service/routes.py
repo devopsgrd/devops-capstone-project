@@ -62,6 +62,12 @@ def create_accounts():
 ######################################################################
 
 # ... place you code here to LIST accounts ...
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    app.logger.info("Request to list all Accounts")
+    accounts = Account.all()  # Retourne la liste des comptes (objets)
+    results = [account.serialize() for account in accounts]  # Convertit en dicts
+    return jsonify(results), status.HTTP_200_OK
 
 
 ######################################################################
@@ -86,6 +92,38 @@ def get_account(account_id):
 ######################################################################
 
 # ... place you code here to UPDATE an account ...
+@app.route("/accounts/<int:account_id>", methods=["PUT"])
+def update_account(account_id):
+    app.logger.info("Request to update Account with id: %s", account_id)
+
+    check_content_type("application/json")
+
+    account = Account.find(account_id)
+    if not account:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+
+    data = request.get_json()
+    app.logger.info("Data received for update: %s", data)
+
+    # Mise à jour partielle
+    try:
+        if "name" in data:
+            account.name = data["name"]
+        if "email" in data:
+            account.email = data["email"]
+        if "address" in data:
+            account.address = data["address"]
+        if "phone_number" in data:
+            account.phone_number = data["phone_number"]
+        if "date_joined" in data:
+            account.date_joined = data["date_joined"]
+        account.update()
+    except Exception as e:
+        abort(status.HTTP_400_BAD_REQUEST, str(e))
+
+    return account.serialize(), status.HTTP_200_OK
+
+
 
 
 ######################################################################
@@ -93,6 +131,13 @@ def get_account(account_id):
 ######################################################################
 
 # ... place you code here to DELETE an account ...
+@app.route("/accounts/<int:account_id>", methods=["DELETE"])
+def delete_account(account_id):
+    app.logger.info(f"Request to delete an Account with id: {account_id}")
+    account = Account.find(account_id)
+    if account:
+        account.delete()
+    return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
